@@ -1,0 +1,182 @@
+{% if request.session.role_id == 2 %}
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            {% include 'nav_li_profile.html' %}
+            <li id="index">
+            	<a href="{% url 'index' %}"><i class="fa fa-dashboard"></i> <span class="nav-label">仪表盘</span><span class="label label-info pull-right"></span></a>
+            </li>
+
+            <li id="jpyasset">
+                <a><i class="fa fa-inbox"></i> <span class="nav-label">资源管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+	                <li id="host"> <a><span class="nav-label">主机管理</span><span class="fa arrow"></span></a>
+	                    <ul class="nav nav-third-level">
+	                        <li class="hostst"> <a href="{% url 'host_list' %}">主机状态<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="mghost"> <a href="{% url 'host_list' %}">管理主机<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="uphost"> <a href="{% url 'host_cloud_list' %}">更新云机<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="hostae"> <a href="#">主机分析<span class="label label-info pull-right">/</span></a></li>
+	                    </ul>                
+	                </li>
+	                <li id="net"> <a><span class="nav-label">网络管理</span><span class="fa arrow"></span></a>
+	                    <ul class="nav nav-third-level">
+	                        <li class="ipmg"> <a href="#">ip管理<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="netsmg"> <a href="#">网络资源<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="rnmg"> <a href="#">域名管理<span class="label label-info pull-right">/</span></a></li>
+	                    </ul>                
+	                </li>
+	                <li id="storager"> <a><span class="nav-label">存储管理</span><span class="fa arrow"></span></a>
+	                    <ul class="nav nav-third-level">
+	                        <li class="ipmg"> <a href="#">云存储管理<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="netsmg"> <a href="#">云CDN管理<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="rnmg"> <a href="#">冷备服管理<span class="label label-info pull-right">/</span></a></li>
+	                    </ul>                
+	                </li>
+	                <li id="idc"> <a><span class="nav-label">机房管理</span><span class="fa arrow"></span></a>
+	                    <ul class="nav nav-third-level">
+	                        <li class="seeidc"> <a href="{% url 'idc_list' %}">查看IDC<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="mgidc"> <a href="{% url 'idc_list' %}">管理IDC<span class="label label-info pull-right">/</span></a></li>
+	                    </ul>                
+	                </li>
+	                <li id="itemmg"> <a><span class="nav-label">项目管理</span><span class="fa arrow"></span></a>
+	                    <ul class="nav nav-third-level">
+	                        <li class="itegmg"> <a href="{% url 'item_list' %}">项目组管理<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="aregmg"> <a href="{% url 'area_list' %}">区域组管理<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="fungmg"> <a href="{% url 'funct_list' %}">功能组管理<span class="label label-info pull-right">/</span></a></li>
+	                    </ul>                
+	                </li>               
+	                <li id="vtmg"> <a><span class="nav-label">业务管理</span><span class="fa arrow"></span></a>
+	                    <ul class="nav nav-third-level">
+	                        <li class="applymg"> <a href="{% url 'appvl_list' %}">应用管理<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="configmg"> <a href="{% url 'confvl_list' %}">配置管理<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="vervl"> <a href="#">业务版本<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="planvl"> <a href="{% url 'planvl_list' %}">方案管理<span class="label label-info pull-right">/</span></a></li>
+	                    </ul>                
+	                </li>
+	                <li id="assetae"> <a><span class="nav-label">资源分析</span><span class="fa arrow"></span></a>
+	                    <ul class="nav nav-third-level">
+	                    <li class="assetct"> <a href="#">资源分类统计<span class="label label-info pull-right">/</span></a></li>
+	                    <li class="assetret"> <a href="#">资源统计报表<span class="label label-info pull-right">/</span></a></li>
+	                    </ul>                
+	                </li>                
+                </ul>
+            </li>
+            <li id="jpydispose">
+                <a><i class="fa fa-gears"></i> <span class="nav-label">部署管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                	<li class="seedispose"><a href="{% url 'dispose_list' %}">查看部署<span class="label label-info pull-right">/</span></a></li>
+                </ul>
+            </li>
+            <li id="jpypublish">
+                <a><i class="fa fa-send"></i> <span class="nav-label">发布管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+            <li id="jpymainte">
+                <a><i class="fa fa-wrench"></i> <span class="nav-label">维护管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+            <li id="jpymonitor">
+                <a><i class="fa fa-video-camera"></i> <span class="nav-label">监控管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+            <li id="jpylog">
+                <a><i class="fa fa-history"></i> <span class="nav-label">日志管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>                                                 
+            <li id="jpyuser">
+                <a href="#"><i class="fa fa-group"></i> <span class="nav-label">用户管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="group"><a href="{% url 'user_group_list' %}">查看用户组<span class="label label-info pull-right">/</span></a></li>
+                    <li class="user"><a href="{% url 'user_list' %}">查看用户<span class="label label-info pull-right">/</span></a></li>
+                </ul>
+            </li>            
+            <li id="jpyperm">
+                <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">授权管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="sudo">
+
+                    </li>
+                    <li class="role">
+
+                    </li>
+                    <li class="rule">
+
+                    </li>
+                </ul>
+            </li>
+            <li id="file">
+                <a href="#"><i class="fa fa-download"></i> <span class="nav-label">上传下载</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+            <li id="setting">
+            </li>
+            <li class="special_link">
+                <a href="http://www.server.org" target="_blank"><i class="fa fa-database"></i> <span class="nav-label">访问官网</span></a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+{% endif %}
+
+{% if request.session.role_id != 2 %}
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            {% include 'nav_li_profile.html' %}
+            <li id="jpyuser">
+            </li>
+            <li id="jpyasset">
+                <a><i class="fa fa-inbox"></i> <span class="nav-label">资源管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+	                <li id="hostmg"> <a href="#">主机管理<span class="fa arrow"></span></a>
+	                    <ul class="nav nav-second-level">
+	                        <li class="hostst"> <a href="{% url 'host_list' %}">主机状态<span class="label label-info pull-right">/</span></a></li>
+	                        <li class="hostae"> <a href="#">主机分析<span class="label label-info pull-right">/</span></a></li>
+	                    </ul>                
+	                </li>                          
+                </ul>
+            </li>
+            <li id="jpydispose">
+                <a><i class="fa fa-gears"></i> <span class="nav-label">部署管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+            <li id="jpypublish">
+                <a><i class="fa fa-send"></i> <span class="nav-label">发布管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+            <li id="jpymainte">
+                <a><i class="fa fa-wrench"></i> <span class="nav-label">维护管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+            <li id="jpymonitor">
+                <a><i class="fa fa-video-camera"></i> <span class="nav-label">监控管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+            <li id="jpylog">
+                <a><i class="fa fa-files-o"></i> <span class="nav-label">日志管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>             
+            <li id="file">
+                <a href="#"><i class="fa fa-download"></i> <span class="nav-label">上传下载</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                </ul>
+            </li>
+
+            <li class="special_link">
+                <a href="http://www.server.org" target="_blank"><i class="fa fa-database"></i> <span class="nav-label">访问官网</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+{% endif %}

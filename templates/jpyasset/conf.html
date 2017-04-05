@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="panel blank-panel">
+				<div class="panel-heading">
+					<div class="panel-options">
+	                    <ul class="nav nav-tabs" id="appchg">
+	                        <li class="active"><a href="{% url 'confvl_list' %}"><i class="fa fa-navicon"></i> 配置设置</a>
+	                        </li>
+	                        <li class=""><a href="{% url 'conftaskname_list' %}"><i class="fa fa-desktop"></i> 任务名称</a>
+	                        </li>
+	                        <li class=""><a href="{% url 'conftaskset_list' %}"><i class="fa  fa-files-o"></i> 任务设置</a>
+	                        </li>
+	                    </ul>
+					</div>
+				</div>            
+				<div class="panel-body">
+					<div class="tab-content">
+
+						{% block contentapp %}{% endblock %}
+												           
+					</div>   
+				</div>            
+			</div>   
+		</div>
+    </div>
+</div>
+{% endblock %}
+{% block self_footer_js %}
+<script>
+
+</script>
+{% endblock %}

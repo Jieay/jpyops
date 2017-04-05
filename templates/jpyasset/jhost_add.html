@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% load bootstrap %}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 填写主机基本信息 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+                        <div class="panel-options">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="{% url 'host_add' %}" class="text-center"><i class="fa fa-laptop"></i> 单台添加 </a></li>
+                                <li><a href="#" class="text-center"><i class="fa fa-bar-chart-o"></i> 批量添加 </a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+                                    {% if error %}
+                                        <div class="alert alert-warning text-center">{{ error }}</div>
+                                    {% endif %}
+                                    {% if msg %}
+                                        <div class="alert alert-success text-center">{{ msg }}</div>
+                                    {% endif %}
+
+                                    <form id="hostForm" method="post" class="form-horizontal">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">主机名<span class="red-fonts"> *</span> </label>
+                                            <div class=" col-sm-10 col-lg-10 ">
+                                                <input type="text" id="id_hostname" value="" name="hostname" class="form-control">
+                                            </div>                                            
+                                        </div>
+
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.wan_ip|bootstrap_horizontal }}
+
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.lan_ip|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.other_ip|bootstrap_horizontal }}                                        
+
+                                        <div class="form-group" id="admin_account" style="display: none">
+                                        	<div class="hr-line-dashed"></div>
+                                            <label class="col-sm-2 control-label">用户名<span class="red-fonts">*</span> </label>
+                                            <div class="col-sm-3">
+                                                <input type="text" placeholder="Username" name="username" class="form-control">
+                                            </div>
+
+                                            <label class="col-sm-1 control-label">密码<span class="red-fonts">*</span> </label>
+                                            <div class="col-sm-4">
+                                                <input type="password" placeholder="Password" name="password" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" id="id_port">
+                                            <div class="hr-line-dashed"></div>
+                                            <label class="col-sm-2 control-label"> 端口<span class="red-fonts">*</span> </label>
+                                            <div class="col-sm-8">
+                                                <input type="text" placeholder="Port" name="port" class="form-control" value="{{ default_port }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.cpu|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.memory|bootstrap_horizontal }}                                          
+
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.disk|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.mac|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.system_type|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.system_version|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.idc|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.item|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.area|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.functs|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">主机编号<span class="red-fonts"> *</span> </label>
+                                            <div class=" col-sm-10 col-lg-10 ">
+                                                <input type="text" id="id_number" value="" onchange="onChang()" name="number" class="form-control">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class=" col-sm-10 col-lg-10 ">
+                                            <p id="show_hsotname"></p>
+                                            </div>                                          
+                                        </div>
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.plan|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.status|bootstrap_horizontal }}
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        {{ af.comment|bootstrap_horizontal }}                                        
+
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <button class="btn btn-white" type="reset"> 重置 </button>
+                                                <button class="btn btn-primary" type="submit"> 提交 </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    $('document').ready(function(){
+        var check_default = "{{ default_setting.name }}";
+        console.log(check_default);
+        if (check_default != 'default'){
+            $('#id_use_default_auth').attr('disabled', true);
+            $('#id_use_default_auth').attr('checked', false);
+            $('#admin_account').css('display', 'block');
+        } else {
+            $('#id_use_default_auth').click(function(){
+                if ($(this).is(':checked')){
+                    $('#admin_account').css('display', 'none');
+                }
+                else {
+                    $('#admin_account').css('display', 'block');
+                }
+            })
+        }
+
+    });
+
+	function all_id() {
+		var wan_ip = document.getElementById("id_wan_ip").value;
+		var idc_id = document.getElementById("id_idc").value;
+		var item_id = document.getElementById("id_item").value;
+		var area_id = document.getElementById("id_area").value;
+		var functs_id = document.getElementById("id_functs").value;
+		if (wan_ip && idc_id && item_id && area_id && functs_id != ""){
+			var id_all = {idc_id:idc_id, item_id:item_id, area_id:area_id, functs_id:functs_id};
+			return id_all			
+		}else{
+			alert("IP 、机房、项目、区域、功能等内容必须选择！")
+		}
+	}; 
+
+ 
+	function set_name(idc_id,item_id,area_id,functs_id) {
+		var wan_ip = document.getElementById("id_wan_ip").value.split('.');
+		var show_ip = wan_ip[0] + '-' + wan_ip[1] + '-' + wan_ip[2] + '-' + wan_ip[3];	
+		if (wan_ip != "") {
+			var num = document.getElementById("id_number").value;
+			if (num != "") {
+				var set_hsot_name = idc_id + '-' + item_id + '-' + area_id + '-' + functs_id + num + '-' + show_ip + '.istorm.com';
+				var show_name = 'hostname ： ' + set_hsot_name;
+				document.getElementById("show_hsotname").innerHTML=show_name;
+				document.getElementById("id_hostname").value=set_hsot_name;	
+				return true;	
+			}else{
+			}	
+		}else{
+			alert("外网IP内容必须填写！");		
+		}	
+	};
+
+
+	function chag_name_set_host() {
+		all_id();
+		var idc_id = all_id()['idc_id'], item_id = all_id()['item_id'], area_id = all_id()['area_id'], functs_id = all_id()['functs_id'];
+        $.get('{% url "host_edit_chg_name" %}',{
+        		idc_id: idc_id,
+				item_id: item_id,
+				area_id: area_id,
+				functs_id: functs_id
+				},function(data){
+					var idc = data.idc, item = data.item, area = data.area, functs = data.functs
+					if (idc && item && area && functs != ""){
+						set_name(idc,item,area,functs);				
+					}else{
+						alert("获取数据失败！")
+					}
+		});	
+	};
+
+
+    $('#id_number').click(function(){
+		all_id();
+	}); 
+		
+
+	function onChang() {
+		chag_name_set_host();
+	};			
+
+
+    var required_fields = ["id_hostname", "id_port"];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+
+    $('#hostForm').validator({
+        timely: 2,
+        theme: "yellow_right_effect",
+        rules: {
+            check_ip: [/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/, 'ip地址不正确'],
+            check_port: [/^\d{1,5}$/, '端口号不正确'],
+            use_default_auth: function() {
+                var str1 = $("#id_use_default_auth").is(":checked");
+                if (str1 == true){
+                    var decide = false;
+                } else {
+                    var decide = true;
+                }
+                return decide}
+        },
+        fields: {
+            "wan_ip": {
+                rule: "check_ip;",
+                tip: "输入IP",
+                ok: "",
+                msg: {required: "必须填写!"}
+            },
+            "hostname": {
+                rule: "required;length[0~128]",
+                tip: "填写主机名",
+                ok: "",
+                msg: {required: "必须填写!"}
+            },
+            "port": {
+                rule: "required",
+                tip: "输入端口号",
+                ok: "",
+                msg: {required: "必须填写!"}
+            },
+            "number": {
+                rule: "required;",
+                tip: "输入端主机编号",
+                ok: "",
+                msg: {required: "必须填写!"}
+            },            
+            "username": {
+                rule: "required(use_default_auth)",
+                tip: "输入用户名",
+                ok: "",
+                msg: {required: "必须填写!"}
+            },
+            "password": {
+                rule: "required(use_default_auth);length[0~64]",
+                tip: "输入密码",
+                ok: "",
+                msg: {required: "必须填写!"}
+            }
+        },
+        valid: function(form) {
+            form.submit();
+        }
+    });
+
+</script>
+
+{% endblock %}

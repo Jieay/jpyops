@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% load humanize %}
+
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">              
+                </div>
+                <div class="ibox-content ibox-heading">
+                    <h3>主机详细信息</h3>
+                    <small><i class="fa fa-map-marker"></i> 此主机详细信息.</small>
+                    <form id="contents_form" name="contents_form">
+                    <table class="table table-striped table-bordered table-hover " id="editable" >
+                        <thead>
+                            <tr>
+                                {% ifequal 2 2 %}
+                                    <th class="text-center"><input id="checkall" type="checkbox" class="i-checks" name="checkall" value="checkall" data-editable='false' onclick="check_all('contents_form')"></th>
+                                {% endifequal %}
+                                <th class="text-center"> 机房名 </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for post in idc.object_list  %}
+                            <tr class="gradeX">
+                                <td class="text-center" name="j_id" value="{{ post.id }}" data-editable='false'><input name="id" value="{{ post.id }}" type="checkbox" class="i-checks"></td>
+                                <td class="text-center"> <a href="{% url 'host_cloud_import' %}?idc_id={{ post.id }}">{{ post.name }}</a> </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                   </form>                      
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div class="text-left">
+                            <table class="table">
+                                <tr>
+                                    <td class="text-navy">主机名 ：</td>
+                                    <td>{{ idcname  }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">外网IP ：</td>
+                                    <td>{{ keyid  }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">内网IP ：</td>
+                                    <td>{{ keysecret  }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">内网IP ：</td>
+                                    <td>{{ result }}</td>
+                                </tr>                                
+                                                                    
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#show').click(function(){
+            $('#show').css('display', 'none');
+            $('#more').css('display', 'block');
+        })
+    })
+</script>
+
+
+{% endblock %}

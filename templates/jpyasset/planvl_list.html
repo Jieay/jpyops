@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-title">
+                    <h5> 查看方案信息</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="">
+                    <a href="{% url 'planvl_add' %}" class="btn btn-sm btn-primary "> 添加方案 </a>
+                    <a id="del_btn" class="btn btn-sm btn-danger "> 删除所选 </a>
+                    <form id="search_form" method="get" action="" class="pull-right mail-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control input-sm" id="search_input" name="search" placeholder="Search">
+                            <div class="input-group-btn">
+                                <button id='search_btn' type="submit" class="btn btn-sm btn-primary">
+                                    -搜索-
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+
+                    <table class="table table-striped table-bordered table-hover " id="editable" >
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    <input type="checkbox" id="select_all" name="select_all">
+                                </th>
+                                <th class="text-center">方案名称</th>
+                                <th class="text-center">方案代号</th>
+                                <th class="text-center">机房</th>
+                                <th class="text-center">项目</th>
+                                <th class="text-center">区域</th>
+                                <th class="text-center">功能</th>
+                                <th class="text-center">配置任务</th>
+                                <th class="text-center">备注</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for plan in planvls.object_list %}
+                            <tr class="gradeX">
+                                <td class="text-center">
+                                    <input class="shiftCheckbox" type="checkbox"  name="selected" value="{{ group.id }}">
+                                </td>
+                                <td class="text-center"> {{ plan.name }} </td>
+                                <td class="text-center"> {{ plan.configmark }} </td>
+                                <td class="text-center"> {{ plan.idc.name }} </td>
+                                <td class="text-center"> {{ plan.item.name }} </td>
+                                <td class="text-center"> {{ plan.area.name }} </td>
+                                <td class="text-center"> {{ plan.functs.name }} </td>
+                                <td class="text-center">
+                                    <a href="{% url 'confvl_list' %}?planid={{ conf.id }}"> {{ plan.id | conf_mem_count }}</a>
+                                </td>                                
+                                <td class="text-center"> {{ plan.comment }} </td>
+                                <td class="text-center">
+                                    <a href="{% url 'planvl_edit' %}?id={{ plan.id }}" class="btn btn-xs btn-info">编辑</a>
+                                    <a value="{% url 'planvl_del' %}?id={{ plan.id }}" class="btn btn-xs btn-danger del">删除</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="dataTables_info" id="editable_info" role="status" aria-live="polite">
+                                Showing {{ planvls.start_index }} to {{ planvls.end_index }} of {{ p.count }} entries
+                            </div>
+                        </div>
+                        {% include 'paginator.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_head_css_js %}
+    {% load staticfiles %}
+    <script src="{% static 'js/jquery.shiftcheckbox.js' %}"></script>
+{% endblock %}
+{% block self_footer_js %}
+<script>
+    $(document).ready(function(){
+        $('.del').click(function(){
+            var row = $(this).closest('tr');
+            if (confirm("确定删除")) {
+            $.get(
+                    $(this).attr('value'),
+                    {},
+                    function(data){
+                        row.remove();
+                        alert(data);
+                    }
+
+            )}
+        });
+
+        $('#del_btn').click(function(){
+            var check_array = [];
+            if (confirm("确定删除")) {
+                $(".gradeX input:checked").each(function() {
+                    check_array.push($(this).attr("value"))
+                });
+                $.get("{% url 'planvl_del' %}",
+                    {id: check_array.join(",")},
+                    function(result){
+                        $(".gradeX input:checked").closest("tr").remove();
+                        alert(result);
+
+                    }
+                )
+            }
+
+        });
+        $("tbody tr").shiftcheckbox({
+            checkboxSelector: 'input:checkbox',
+            selectAll: $('#select_all'),
+            ignoreClick: 'a'
+        });
+        $('.shiftCheckbox').shiftcheckbox();
+    });
+</script>
+{% endblock %}

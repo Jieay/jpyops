@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% load humanize %}
+
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="text text-primary"><b>{{ hostasset.hostname }}</b></span>
+                    <div class="ibox-tools">
+                        <a class="" href="{% url 'host_detail' %}?id={{ hostasset.id }}">
+                            <i class="fa fa-refresh"></i>
+                        </a>
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="" href="{% url 'host_edit' %}?id={{ hostasset.id }}">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content ibox-heading">
+                    <h3>主机详细信息</h3>
+                    <small><i class="fa fa-map-marker"></i> 此主机详细信息.</small>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div class="text-left">
+                            <table class="table">
+                                <tr>
+                                    <td class="text-navy">主机名 ：</td>
+                                    <td>{{ hostasset.hostname|default_if_none:""  }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">外网IP ：</td>
+                                    <td>{{ hostasset.wan_ip|default_if_none:""  }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">内网IP ：</td>
+                                    <td>{{ hostasset.lan_ip|default_if_none:""  }}</td>
+                                </tr>                                    
+                                <tr>
+                                    <td class="text-navy">其他IP ：</td>
+                                    <td>{{ hostasset.other_ip|default_if_none:""  }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">SSH端口 ：</td>
+                                    <td>{{ hostasset.port|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">SSH账号 ：</td>
+                                    <td>{{ hostasset.username|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">所属机房 ：</td>
+                                    <td>{{ hostasset.idc.name|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">机房代号 ：</td>
+                                    <td>{{ hostasset.idc.idcmark|default_if_none:"" }}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="text-navy">所属项目 ：</td>
+                                    <td>{{ hostasset.item.name|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">项目代号 ：</td>
+                                    <td>{{ hostasset.item.itemmark|default_if_none:"" }}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="text-navy">所属区域 ：</td>
+                                    <td>{{ hostasset.area.name|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">区域代号 ：</td>
+                                    <td>{{ hostasset.area.areamark|default_if_none:"" }}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="text-navy">所属功能 ：</td>
+                                    <td>{{ hostasset.functs.name|default_if_none:"" }}</td>
+                                </tr>
+                              
+                                <tr>
+                                    <td class="text-navy">功能代号 ：</td>
+                                    <td>{{ hostasset.functs.functionmark|default_if_none:"" }}</td>
+                                </tr>
+                                                                
+                                <tr>
+                                    <td class="text-navy">方案计划 ：</td>
+                                    <td>{{ hostasset.plan.name|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">方案代号 ：</td>
+                                    <td>{{ hostasset.plan.planmark|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">主机编号 ：</td>
+                                    <td>{{ hostasset.number|default_if_none:"" }}</td>
+                                </tr>
+                                                                                                                                                                            
+                                <tr>                                    
+                                    <td class="text-navy">MAC地址 ：</td>
+                                    <td>{{ hostasset.mac|default_if_none:"" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">CPU ：</td>
+                                    <td>{{ hostasset.cpu|default_if_none:"" }} {% if hostasset.cpu %}核{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">内存 ：</td>
+                                    <td>{{ hostasset.memory|default_if_none:"" }} {% if hostasset.memory %}G{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">硬盘 ：</td>
+                                    <td>{{ hostasset.disk|default_if_none:"" }} {% if hostasset.disk %}G{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">带宽 ：</td>
+                                    <td>{{ hostasset.banwidth|default_if_none:"" }} {% if hostasset.banwidth %}M{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">系统版本 ：</td>
+                                    <td>{{ hostasset.system_type|default_if_none:"" }} {{ hostasset.system_version|default_if_none:"" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">云系统镜像ID ：</td>
+                                    <td>{{ hostasset.imageid|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">机器状态 ：</td>
+                                    <td>{{ hostasset.get_status_display|default_if_none:"" }}</td>
+                                </tr>
+                                
+								<tr>
+                                    <td class="text-navy">云创建时间 ：</td>
+                                    <td>{{ hostasset.cretime|default_if_none:"" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">云到期时间 ：</td>
+                                    <td>{{ hostasset.exptime|default_if_none:"" }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-navy">添加日期 ：</td>
+                                    <td>{{ hostasset.date_added|date:"Y-m-d H:i:s" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-navy">备注 ：</td>
+                                    <td>{{ hostasset.comment|default_if_none:"" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#show').click(function(){
+            $('#show').css('display', 'none');
+            $('#more').css('display', 'block');
+        })
+    })
+</script>
+
+
+{% endblock %}
