@@ -8,7 +8,7 @@ import json
 import time
 import re
 from django.db.models import AutoField
-from jpyasset.models import ASSET_STATUS, IDC, HostAsset, CloudRecord, ApplyFile, ConfigVocational
+from jpyasset.models import ASSET_STATUS, IDC, HostAsset, CloudRecord, ApplyFile, ConfigVocational, ConfigPlanTask, PlanVocational
 from jpyapi.jpy001api import *
 #from jpy001.templatetags.mytags import get_disk_info
 from jpyapi.jpycloudapi import ALiYunApi, TenXunYunCvm
@@ -318,7 +318,7 @@ def conf_add_file(conf, file_id=None, filename=None):
     if file_id:
         file = get_object(ApplyFile, id=file_id)
     else:
-        file = get_object(ApplyFile, filename=filename)
+        file = get_object(ApplyFile, name=filename)
 
     if file:
         conf.configfile.add(file)
@@ -352,7 +352,32 @@ def conf_update_member(conf_id, files_id_list):
                 conf.configfile.add(file)       
         
         
-        
+def plan_add_cpt(plan, cpt_id=None, cptname=None):
+    """
+            方案中添加配置任务计划
+    """
+    if cpt_id:
+        cpt = get_object(ConfigPlanTask, id=cpt_id)
+    else:
+        cpt = get_object(ConfigPlanTask, name=cptname)
+
+    if cpt:
+        plan.configset.add(cpt)
+
+
+def db_add_plan(**kwargs):
+    """
+    数据库中添加方案
+    """
+    name = kwargs.get('name')
+    plan = get_object(PlanVocational, name=name)
+    cpts = kwargs.pop('cpts_id')
+
+    if not plan:
+        plan = PlanVocational(**kwargs)
+        plan.save()
+        for cpt_id in cpts:
+            plan_add_cpt(plan, cpt_id)        
         
         
         

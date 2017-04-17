@@ -297,3 +297,17 @@ class RealmName(models.Model):
 
 class AssetPerm(models.Model):
     pass
+
+
+class SaltReturns(models.Model):
+    fun = models.CharField(max_length=50, verbose_name=u'任务指令类型')
+    fun_args = models.CharField(max_length=255, blank=True, null=True, verbose_name=u'任务指令参数')
+    jid = models.CharField(max_length=255, verbose_name=u'任务JID')
+    returns = models.TextField(verbose_name=u'任务返回结果')
+    ids = models.CharField(max_length=255, verbose_name=u'任务ID')
+    success = models.CharField(max_length=10, verbose_name=u'任务状态')
+    full_ret = models.TextField(verbose_name=u'salt的所有返回结果')
+    alter_time = models.DateTimeField(auto_now_add=True, verbose_name=u'创建记录的时间')
+    
+    def __unicode__(self):
+        return self.jid

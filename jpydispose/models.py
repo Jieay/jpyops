@@ -43,4 +43,13 @@ class Taskcmdhistory(models.Model):
 
     def __unicode__(self):
         return self.fruits
+    
+    
+class TaskTest(models.Model):
+    hostip = models.CharField(max_length=128, blank=True, null=True)
+    fruits = models.TextField()
+    create_time = models.DateTimeField(auto_now=True)
+    
+    def __unicode__(self):
+        return self.fruits    
 

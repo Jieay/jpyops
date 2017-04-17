@@ -253,13 +253,6 @@ def get_session_user_dept(request):
     get department of the user in session
     获取session中用户的部门
     """
-    # user_id = request.session.get('user_id', 0)
-    # print '#' * 20
-    # print user_id
-    # user = User.objects.filter(id=user_id)
-    # if user:
-    #     user = user[0]
-    #     return user, None
     return request.user, None
 
 
@@ -269,10 +262,6 @@ def get_session_user_info(request):
     get the user info of the user in session, for example id, username etc.
     获取用户的信息
     """
-    # user_id = request.session.get('user_id', 0)
-    # user = get_object(User, id=user_id)
-    # if user:
-    #     return [user.id, user.username, user]
     return [request.user.id, request.user.username, request.user]
 
 
@@ -281,4 +270,13 @@ def get_tmp_dir():
     mkdir(dir_name, mode=777)
     return dir_name
 
+class MyJsonEncoder(json.JSONEncoder):
+    
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)        
 

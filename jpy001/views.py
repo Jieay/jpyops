@@ -41,6 +41,7 @@ def index(request):
     return render_to_response('index.html', locals(), context_instance=RequestContext(request))
 
 
+@require_role(role='user')
 def skin_config(request):
     return render_to_response('skin_config.html')
 

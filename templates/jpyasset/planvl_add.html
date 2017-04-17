@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load bootstrap %}
 {% block content %}
-    {% include 'nav_cat_bar.html' %}
+{% include 'nav_cat_bar.html' %}
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-sm-10">
@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="ibox-content">
-                        <form id="confForm" method="post" class="form-horizontal" action="">
+                        <form id="planForm" method="post" class="form-horizontal" action="">
                             {% if error %}
                                 <div class="alert alert-warning text-center">{{ error }}</div>
                             {% endif %}
@@ -30,56 +30,19 @@
                                 <div class="alert alert-success text-center">{{ msg }}</div>
                             {% endif %}
                             <div class="form-group">
-                                <label for="conf_name" class="col-sm-2 control-label">业务配置名称<span class="red-fonts">*</span></label>
+                                <label for="plan_name" class="col-sm-2 control-label">方案名称<span class="red-fonts">*</span></label>
                                 <div class="col-sm-10 col-lg-10 ">
-                                    <input id="conf_name" name="conf_name" placeholder="Config Vocational Name" type="text" class="form-control" value="{{ conf_name }}">
+                                    <input id="plan_name" name="plan_name" placeholder="Plan Vocational Name" type="text" class="form-control" value="{{ plan_name }}">
                                 </div>
                             </div>
                             
                             
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">业务配置代号<span class="red-fonts"> *</span> </label>
+                                <label class="col-sm-2 control-label">方案代号<span class="red-fonts"> *</span> </label>
                                 <div class=" col-sm-10 col-lg-10 ">
-                                    <input type="text" id="conf_configmark" value="" name="configmark" class="form-control">
+                                    <input type="text" id="plan_planmark" value="" name="planmark" class="form-control">
                                 </div>                                            
-                            </div>
-                            
-                            
-                            <div class="hr-line-dashed"></div>
-                            {{ af.servername|bootstrap_horizontal }}
-                            
-                            <div class="hr-line-dashed"></div>
-                            {{ af.tools_type|bootstrap_horizontal }}
-                            
-                            
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group">
-                                <label for="files" class="col-sm-2 control-label">应用文件</label>
-                                <div class="col-sm-3">
-                                	<small>可选的内容</small>
-                                	<div>
-	                                	<select id="files" name="files" size="12" class="form-control m-b" multiple>
-	                                        {% for file in file_all %}
-	                                            <option value="{{ file.id }}">{{ file.name }}</option>
-	                                        {% endfor %}
-	                                    </select>
-                                	</div>
-                                </div>
-                                <div class="col-sm-1">
-                                    <div class="btn-group" style="margin-top: 70px;">
-                                        <button type="button" class="btn btn-white" onclick="move('files', 'files_selected')"><i class="fa fa-chevron-right"></i></button>
-                                        <button type="button" class="btn btn-white" onclick="move('files_selected', 'files')"><i class="fa fa-chevron-left"></i> </button>
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                	<small>已选的内容</small>
-                                    <div>
-                                        <select id="files_selected" name="files_selected" class="form-control m-b" size="12"  multiple>
-                                    
-                                        </select>
-                                    </div>
-                                </div>
                             </div>
                             
                             
@@ -94,9 +57,37 @@
                             
                             <div class="hr-line-dashed"></div>
                             {{ af.functs|bootstrap_horizontal }}
+                                                        
                             
                             <div class="hr-line-dashed"></div>
-                            {{ af.ostype|bootstrap_horizontal }}
+                            <div class="form-group">
+                                <label for="plans" class="col-sm-2 control-label">应用文件</label>
+                                <div class="col-sm-3">
+                                	<small>可选的内容</small>
+                                	<div>
+	                                	<select id="plans" name="plans" size="12" class="form-control m-b" multiple>
+	                                        {% for plan in plantask_all %}
+	                                            <option value="{{ plan.id }}">{{ plan.name.name }}</option>
+	                                        {% endfor %}
+	                                    </select>
+                                	</div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="btn-group" style="margin-top: 70px;">
+                                        <button type="button" class="btn btn-white" onclick="move('plans', 'plans_selected')"><i class="fa fa-chevron-right"></i></button>
+                                        <button type="button" class="btn btn-white" onclick="move('plans_selected', 'plans')"><i class="fa fa-chevron-left"></i> </button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                	<small>已选的内容</small>
+                                    <div>
+                                        <select id="plans_selected" name="plans_selected" class="form-control m-b" size="12"  multiple>
+                                    
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             
                             <div class="hr-line-dashed"></div>
                             {{ af.comment|bootstrap_horizontal }}
@@ -120,27 +111,27 @@
 
 {% block self_footer_js %}
 <script>
-$('#confForm').validator({
+$('#planForm').validator({
     timely: 2,
     theme: "yellow_right_effect",
     fields: {
-        "conf_name": {
+        "plan_name": {
             rule: "required",
-            tip: "用户输入配置名称",
+            tip: "用户输入方案名称",
             ok: "",
             msg: {required: "必须填写!"}
         },
-        "configmark": {
+        "planmark": {
             rule: "required",
-            tip: "用户输入配置代号",
+            tip: "用户输入方案代号",
             ok: "",
             msg: {required: "必须填写!"}
         },
-        "files_selected": {
+        "plans_selected": {
             rule: "checked",
-            tip: "选择配置的应用文件",
+            tip: "选择方案的配置任务计划",
             ok: "",
-            msg: {required: "至少选择一个应用文件!"}
+            msg: {required: "至少选择一个配置任务计划!"}
         }
     },
     valid: function(form) {
@@ -151,7 +142,7 @@ $('#confForm').validator({
 
 $(document).ready(function(){
     $("#submit_button").click(function(){
-        $('#files_selected option').each(function(){
+        $('#plans_selected option').each(function(){
             $(this).prop('selected', true)
         })
     })

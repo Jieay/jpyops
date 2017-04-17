@@ -16,6 +16,7 @@ from jpyapi.jpycloudapi import ALiYunApi, TenXunYunCvm
 from django.http import HttpResponse
 from jpy001.settings import MEDIA_ROOT
 from django.shortcuts import get_object_or_404
+from _ast import Add
 
 
 
@@ -1324,18 +1325,64 @@ def vervl_list(request):
 
 @require_role(role='super')
 def planvl_add(request):
-    pass
+    """
+    planvl add view 
+    """
+    error = ''
+    msg = ''
+    header_title, path1, path2, path3 = u'添加方案', u'业务管理', u'添加方案', u'方案管理'
+    plantask_all = ConfigPlanTask.objects.all()
+    af = PlanVocationalForm()
+
+    if request.method == 'POST':
+        plan_name = request.POST.get('plan_name', '')
+        plan_planmark = request.POST.get('planmark', '')
+        plans_selected = request.POST.getlist('plans_selected', '')
+              
+        try:
+            if not plan_name:
+                error = u'方案名 不能为空'
+                raise ServerError(error)
+            elif not plan_planmark:
+                error = u'方案代号 不能为空'
+                raise ServerError(error)                
+
+            if PlanVocational.objects.filter(name=plan_name):
+                error = u'方案名 %s 已存在' % plan_name
+                raise ServerError(error)
+            elif PlanVocational.objects.filter(planmark=plan_planmark):
+                error = u'方案代号 %s 已存在' % plan_planmark
+                raise ServerError(error)
+            db_add_plan(name=plan_name, planmark=plan_planmark, cpts_id=plans_selected)
+            planvl = get_object(PlanVocational, name=plan_name)
+            if planvl:
+                planvl_form = PlanVocationalForm(request.POST, instance=planvl)            
+                if planvl_form.is_valid():
+                    planvl_form.save()
+                    msg = u'添加方案  %s 成功' % plan_name
+                    return HttpResponseRedirect(reverse('planvl_list'))
+                else:
+                    esg = u'添加方案 %s 失败' % plan_name            
+
+        except ServerError:
+            pass
+        except TypeError:
+            error = u'添加方案失败'
+        else:
+            msg = u'添加方案  %s 成功' % plan_name
+
+    return my_render('jpyasset/planvl_add.html', locals(), request)
 
 
 @require_role(role='super')
 def planvl_del(request):
     """
-    del a planvl
+    planvl delete view
     """
     plan_ids = request.GET.get('id', '')
     plan_id_list = plan_ids.split(',')
     for plan_id in plan_id_list:
-        plan_data = get_object_or_404(ConfigVocational, id=plan_id)            
+        plan_data = get_object_or_404(PlanVocational, id=plan_id)            
         conftaskdata = plan_data.configset.all()
         for k in conftaskdata:
             plan_data.configset.remove(k)
@@ -1352,7 +1399,7 @@ def planvl_edit(request):
 @require_role(role='super')
 def planvl_list(request):
     """
-    planvl list views
+    planvl list view
     """
     header_title, path1, path2, path3 = u'查看方案', u'业务管理', u'查看方案', u'方案管理'
     keyword = request.GET.get('search', '')
