@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-10">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>填写方案基本信息</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <form id="planForm" method="post" class="form-horizontal" action="">
+                            {% if error %}
+                                <div class="alert alert-warning text-center">{{ error }}</div>
+                            {% endif %}
+                            {% if msg %}
+                                <div class="alert alert-success text-center">{{ msg }}</div>
+                            {% endif %}
+                            <div class="form-group">
+                                <label for="plan_name" class="col-sm-2 control-label">方案名称<span class="red-fonts">*</span></label>
+                                <div class="col-sm-10 col-lg-10">
+                                    <input name="plan_id" type="text" class="form-control" value="{{ confs_plan.id }}" style="display: none">
+                                    <input id="plan_name" name="plan_name" placeholder="Plan Vocational Name" type="text" class="form-control" value="{{ confs_plan.name }}">
+                                </div>
+                            </div>
+                            
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">方案代号<span class="red-fonts"> *</span> </label>
+                                <div class=" col-sm-10 col-lg-10 ">
+                                    <input type="text" id="plan_planmark" value="{{ confs_plan.planmark }}" name="planmark" class="form-control">
+                                </div>                                            
+                            </div>
+                            
+                            <div class="hr-line-dashed"></div>
+                            {{ af.idc|bootstrap_horizontal }}
+                            
+                            <div class="hr-line-dashed"></div>
+                            {{ af.item|bootstrap_horizontal }}
+                            
+                            <div class="hr-line-dashed"></div>
+                            {{ af.area|bootstrap_horizontal }}
+                            
+                            <div class="hr-line-dashed"></div>
+                            {{ af.functs|bootstrap_horizontal }}
+                            
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="files" class="col-sm-2 control-label">应用文件</label>
+                                <div class="col-sm-3">
+                                	<small>可选的内容</small>
+                                	<div>
+                                		<select id="confs" name="confs" size="12" class="form-control m-b" multiple>
+                                        {% for conf in confs_remain %}
+                                            <option value="{{ conf.id }}">{{ conf.name }}</option>
+                                        {% endfor %}
+                                    	</select>
+                                	</div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="btn-group" style="margin-top: 50px;">
+                                        <button type="button" class="btn btn-white" onclick="move('confs', 'confs_selected')"><i class="fa fa-chevron-right"></i></button>
+                                        <button type="button" class="btn btn-white" onclick="move('confs_selected', 'confs')"><i class="fa fa-chevron-left"></i> </button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                	<small>已选的内容</small>
+                                    <div>
+                                        <select id="confs_selected" name="confs_selected" class="form-control m-b" size="12"  multiple>
+                                        {% for conf in confs_selected %}
+                                            <option value="{{ conf.id }}">{{ conf.name }}</option>
+                                        {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="hr-line-dashed"></div>
+                            {{ af.comment|bootstrap_horizontal }}
+
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-white" type="reset">重置</button>
+                                    <button id="submit_button" class="btn btn-primary" type="submit">确认保存</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+$('#planForm').validator({
+    timely: 2,
+    theme: "yellow_right_effect",
+    fields: {
+        "plan_name": {
+            rule: "required",
+            tip: "用户输入方案名称",
+            ok: "",
+            msg: {required: "必须填写!"}
+        },
+        "planmark": {
+            rule: "required",
+            tip: "用户输入方案代号",
+            ok: "",
+            msg: {required: "必须填写!"}
+        },
+        "plans_selected": {
+            rule: "checked",
+            tip: "选择方案的配置任务计划",
+            ok: "",
+            msg: {required: "至少选择一个配置任务计划!"}
+        }
+    },
+    valid: function(form) {
+        form.submit();
+    }
+});
+
+
+$(document).ready(function(){
+    $("#submit_button").click(function(){
+        $('#confs_selected option').each(function(){
+            $(this).prop('selected', true)
+        })
+    })
+});
+</script>
+{% endblock %}

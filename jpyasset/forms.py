@@ -145,7 +145,7 @@ class PlanVocationalForm(forms.ModelForm):
         model = PlanVocational
 
         fields = [
-            "name", "planmark", "idc", "item", "area", "functs", "comment"
+            "planmark", "idc", "item", "area", "functs", "comment"
         ]
 
 

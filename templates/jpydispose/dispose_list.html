@@ -154,7 +154,8 @@
 	                  <div id="cmdht"style="background-color: #000000; color:#7FFF00;font-size:12px;height: 600px; width:100%; overflow :auto">
 		                  <div id="cmd_div" style="position: relative; margin-top: 10px; margin-right: 10px;  margin-bottom: 10px; margin-left: 10px;">
 			                  <p id="cmd_detail_host" style="font-family: "Monaco", "Microsoft Yahei", "DejaVu Sans Mono", "Liberation Mono"; ">部署主机</p>  
-			                  <p id="cmd_detail_msg" style="font-family: "Monaco", "Microsoft Yahei", "DejaVu Sans Mono", "Liberation Mono"; ">部署信息</p> 
+			                  <p id="cmd_detail_msg" style="font-family: "Monaco", "Microsoft Yahei", "DejaVu Sans Mono", "Liberation Mono"; ">部署信息</p>
+			                  <pre style="background-color: #000000; color:#7FFF00;font-size:12px;border:none;white-space: pre-wrap;word-wrap: break-word;"></pre> 
 		                  </div>
 
 	                  </div>
@@ -171,158 +172,230 @@
 {% block self_footer_js %}
 <script>	
         
-        $('#cmdsubmit').click(function(){
-	        var hostip = $("#id_hostip").val();
-	        var furits = $('#cmdradio input:checked').val();
-	        var parm_arg = $("#parm_arg").val();
-	        $('#cmd_detail_host').text('');
-	        $('#cmd_detail_msg').text('');
-	        //$('#cmd_div').append(hostip)       
-	        $.ajax({
-	        	url: '{% url "dispose_add" %}',
-	        	data: {'hostip':hostip, 'furits':furits,'parm_arg':parm_arg},
-	        	type: "POST",
-	        	success: function(callbak){
-	        		console.log(callbak);
-	        		if (callbak.status == 1){
-		        		//$("#id_hostip").val('');
-		        		//$("#id_furits").val('');
-		        		console.log(callbak.data[0]);
-		        		
-		        		        		
-	        		}
-	        	}
-	        });
-	        
-        
-        });
-		
-		window.tags = 'True'		
-        function cmdhistory(){
-        	if (window.tags == 'True'){
-		        $.ajax({
-		        	url: '{% url "dispose_history" %}',
-		        	type: "POST",
-		        	data: '',
-		        	success: function(callbak){
-		        		//console.log(callbak);
-		        		//var callbak = jQuery.parseJSON(callbak);
-		        		if (callbak.status == 1){
-			        		//console.log(callbak.data)
-			        		window.ht_id = callbak.data[0].id
-			        		console.log(window.ht_id)
-			        		//console.log(typeof(callbak.data))
-			        		/*
-		        			var data = callbak.data.reverse()
-		        			$(data).each(function(k,v){
-		        				console.log(v)
-		        				var jid = v.jid
-		        				var serverid = v.ids
-		        				var result = v.returns
-		        				var status = v.success
-			        			var textdata1 = 'jid:' + jid + ' ' + 'id:' + serverid + ' ' + 'status:' + status
-			        			var textdata2 = '返回值:'+ '<br>' + result
+    $('#cmdsubmit').click(function(){
+     var hostip = $("#id_hostip").val();
+     var furits = $('#cmdradio input:checked').val();
+     var parm_arg = $("#parm_arg").val();
+     $('#cmd_detail_host').text('');
+     $('#cmd_detail_msg').text('');
+     //$('#cmd_div').append(hostip)       
+     $.ajax({
+     	url: '{% url "dispose_add" %}',
+     	data: {'hostip':hostip, 'furits':furits,'parm_arg':parm_arg},
+     	type: "POST",
+     	success: function(callbak){
+     		//console.log(callbak);
+     		if (callbak.status == 1){
+      		//$("#id_hostip").val('');
+      		//$("#id_furits").val('');
+      		//console.log(callbak.data[0]);
+     		}
+     	}
+     });
+    });
+	
+	window.tags = 'True'		
+    function cmdhistory(){
+    	if (window.tags == 'True'){
+      $.ajax({
+      	url: '{% url "dispose_history" %}',
+      	type: "POST",
+      	data: '',
+      	success: function(callbak){
+      		if (callbak.status == 1){
+       		window.ht_id = callbak.data[0].id
+       		console.log(window.ht_id)			        		
+       		window.tags = 'False'		        		
+      		}else{
+      		
+      		}
+      	}
+      });         	
+    	
+    	}else{
+		//console.log(window.ht_id)
+      $.ajax({
+      	url: '{% url "dispose_news" %}',
+      	type: "POST",
+      	data: {'ht_id':window.ht_id},
+      	success: function(callbak){
+      		//console.log(callbak);
+      		//var callbak = jQuery.parseJSON(callbak);
+      		if (callbak.status == 1){
+      			//console.log(callbak.data[0])
+      			//console.log(typeof(callbak.data[0]))
+      			if (window.ht_id != callbak.data[0].id){
+      				window.ht_id = callbak.data[0].id
+      				var hsidata = callbak.data.reverse()
+      				$(hsidata).each(function(k,v){				        			
+       				var jid = v.jid
+       				var serverid = v.ids
+       				var result = v.returns
+       				var status = v.success
+       				var resultpe = typeof(result)
+       				console.log(resultpe)
+        			if (resultpe == "string"){
+						//console.log(result.substring(0, 1))
+						if (result.substring(0, 1) == "{" || result.substr(0) == "true"){
+							var jsonStr = result;
+							var yaml = json2yaml(jsonStr);
+		        			var textdata1 = 'jid:' + jid + '&nbsp;&nbsp;' + '主机:' + serverid + '&nbsp;&nbsp;' + '状态:' + status
+		        			var textdata2 = yaml
+		        			var xsp1 = '<p style="font-size:14px; color:#FF34B3;font-family: "Monaco", "Microsoft Yahei", "DejaVu Sans Mono", "Liberation Mono";"> '+textdata1+' </p>'
+			        		var xsp2 = '<pre style="background-color: #000000; color:#7FFF00;font-size:12px;border:none; white-space: pre-wrap;word-wrap: break-word;"> '+textdata2+' </pre>'
+					        $('#cmd_detail_host').text('');
+					        $('#cmd_detail_msg').text('');
+					        $("#cmd_div").append(xsp1);
+			        		$("#cmd_div").append(xsp2);				        			
+		        			//$("#cmd_div pre").append(textdata1 + '<br>')
+		        			//$("#cmd_div pre").append(textdata2 + '<br></br>')
+		        			$('#cmdht').scrollTop($('#cmd_div').height());											
+																			
+						}else{
+		        				var changeresult = result
+		        				var fiststr = changeresult.substr(0,1)
+		        				var laststr = changeresult.substr(-1,1)
+		        				var changeresult = changeresult.replace(fiststr,"");
+		        				var changeresult = changeresult.replace(laststr,"");
+		        				var resultlist = changeresult.split("\\n")
+		        				var afresult = resultlist.join("\n");
+		        			
+			        			var textdata1 = 'jid:' + jid + '&nbsp;&nbsp;' + '主机:' + serverid + '&nbsp;&nbsp;' + '状态:' + status
+			        			var textdata2 = afresult
 			        			var xsp1 = '<p style="font-size:14px; color:#FF34B3;font-family: "Monaco", "Microsoft Yahei", "DejaVu Sans Mono", "Liberation Mono";"> '+textdata1+' </p>'
-			        			var xsp2 = '<p> '+textdata2+' </p>'
+			        			var xsp2 = '<pre style="background-color: #000000; color:#7FFF00;font-size:12px;border:none; white-space: pre-wrap;word-wrap: break-word;"> '+textdata2+' </pre>'
+						        $('#cmd_detail_host').text('');
+						        $('#cmd_detail_msg').text('');				        			
 			        			$("#cmd_div").append(xsp1);
 			        			$("#cmd_div").append(xsp2);
-			        			$('#cmdht').scrollTop($('#cmd_div').height());				        				
+			        			//$("#cmd_div pre").append(textdata1 + '<br>')
+			        			//$("#cmd_div pre").append(textdata2 + '<br></br>')
+			        			$('#cmdht').scrollTop($('#cmd_div').height());											
+						}        			
+        			}else{
+        			
+        			}
+        			
+      				});
+      			
+      			}else{
+      				console.log('meiyougengxin')		        			
+      			};
+      			
+      		}else{
+      		
+      		};	
+      	}
+      }); 
+    	}
+    };
+
+	setInterval('cmdhistory()',1000);
 
 
-			        			var fruitdata = v.fruits
-			        			console.log(fruitdata)
-			        			var fruitdata = jQuery.parseJSON(fruitdata);
-			        			console.log(typeof(fruitdata))
-			        			console.log(fruitdata[0])
-			        			for (var i in fruitdata[0]){
-				        			var textdata1 = i
-				        			var textdata2 = fruitdata[0][i]
-				        			var xsp1 = '<p style="font-size:14px; color:#FF34B3;font-family: "Monaco", "Microsoft Yahei", "DejaVu Sans Mono", "Liberation Mono";"> '+textdata1+' </p>'
-				        			var xsp2 = '<p> '+textdata2+' </p>'
-				        			//$("#cmd_div").append(xsp1);
-				        			//$("#cmd_div").append(xsp2);
-				        			//$('#cmdht').scrollTop($('#cmd_div').height());
-
-			        			}
-
-
-		        			
-		        			});			        		
-			        		*/
-			        		
-			        		window.tags = 'False'		        		
-		        		}else{
-		        		
-		        		}
-		        	}
-		        });         	
-        	
-        	}else{
-        		//console.log(window.ht_id)
-		        $.ajax({
-		        	url: '{% url "dispose_news" %}',
-		        	type: "POST",
-		        	data: {'ht_id':window.ht_id},
-		        	success: function(callbak){
-		        		//console.log(callbak);
-		        		//var callbak = jQuery.parseJSON(callbak);
-		        		if (callbak.status == 1){
-		        			//console.log(callbak.data)
-		        			//console.log(typeof(callbak.data))
-		        			//console.log(callbak.data[0])
-		        			//console.log(typeof(callbak.data[0]))
-		        			if (window.data_id != callbak.data[0].id){
-		        				window.data_id = callbak.data[0].id
-		        				var hsidata = callbak.data.reverse()
-		        				//console.log(hsidata[0])
-		        				$(hsidata).each(function(k,v){
-				        			
-			        				var jid = v.jid
-			        				var serverid = v.ids
-			        				var result = v.returns
-			        				var status = v.success
-			        				console.log(result)
-			        				console.log(typeof(result))
-				        			var textdata1 = 'jid:' + jid + '&nbsp;&nbsp;' + '主机:' + serverid + '&nbsp;&nbsp;' + '状态:' + status
-				        			var textdata2 = '返回值:'+ '<br>' + result
-				        			var xsp1 = '<p style="font-size:14px; color:#FF34B3;font-family: "Monaco", "Microsoft Yahei", "DejaVu Sans Mono", "Liberation Mono";"> '+textdata1+' </p>'
-				        			var xsp2 = '<p> '+textdata2+' </p>'
-				        			$("#cmd_div").append(xsp1);
-				        			$("#cmd_div").append(xsp2);
-				        			$('#cmdht').scrollTop($('#cmd_div').height());			        				
-				        			
-				        			/*
-				        			var fruitdata = v.fruits
-				        			var fruitdata = jQuery.parseJSON(fruitdata);	        				
-				        			for (var i in fruitdata[0]){
-					        			var textdata1 = i
-					        			var textdata2 = fruitdata[0][i]
-					        			var xsp1 = '<p style="font-size:14px; color:#FF34B3;font-family: "Monaco", "Microsoft Yahei", "DejaVu Sans Mono", "Liberation Mono";"> '+textdata1+' </p>'
-					        			var xsp2 = '<p> '+textdata2+' </p>'
-					        			$("#cmd_div").append(xsp1);
-					        			$("#cmd_div").append(xsp2);
-					        			$('#cmdht').scrollTop($('#cmd_div').height());
+	var spacing = " ";
+	function json2yaml(obj) {
 	
-				        			}	
-				        			*/	        				
-		        				});
-		        			
-		        			}else{
-		        				console.log('meiyougengxin')
-		        			
-		        			}
+	  if (typeof obj == 'string') {
+	    obj = JSON.parse(obj);
+	  }
+	
+	 
+	  var ret = [];
+	  console.log(typeof obj);
+	  convert(obj, ret);
+	  return ret.join("\n");
+	};
+	
+	
+	function getType(obj) {
+	  var type = typeof obj;
+	  
+	  if (obj instanceof Array) {
+	    return 'array';
+	  } else if (type == 'string') {
+	    return 'string';
+	  } else if (type == 'boolean') {
+	    return 'boolean';
+	  } else if (type == 'number') {
+	    return 'number';
+	  } else if (type == 'undefined' || obj === null) {
+	    return 'null';
+	  } else {
+	    return 'hash';
+	  }
+	}
+	
+	function convert(obj, ret) {
+	  var type = getType(obj);
+	
+	  switch(type) {
+	    case 'array':
+	      convertArray(obj, ret);
+	      break;
+	    case 'hash':
+	      convertHash(obj, ret);
+	      break;
+	    case 'string':
+	      convertString(obj, ret);
+	      break;
+	    case 'null':
+	      ret.push('null');
+	      break;
+	    case 'number':
+	      ret.push(obj.toString());
+	      break;
+	    case 'boolean':
+	      ret.push(obj ? 'true' : 'false');
+	      break;
+	  }
+	}
+	function convertArray(obj, ret) {
+	  for (var i=0; i<obj.length; i++) {
+	    var ele = obj[i];
+	    var recurse = [];
+	    convert(ele, recurse);
+	
+	    for (var j=0; j<recurse.length; j++) {
+	      ret.push((j == 0 ? "- \n   " : spacing) + recurse[j]);
+	    }
+	  }
+	}
+	
+	function convertHash(obj, ret) {
+	  for (var k in obj) {
+	    var recurse = [];
+	    if (obj.hasOwnProperty(k)) {
+	      var ele = obj[k];
+	      convert(ele, recurse);
+	      var type = getType(ele);
+	      if (type == 'string' || type == 'null' || type == 'number' || type == 'boolean') {
+	        ret.push(normalizeString(k) + ': ' + recurse[0]);
+	      } else {
+	        ret.push(normalizeString(k) + ': ');
+	        for (var i=0; i<recurse.length; i++) {
+	          ret.push(spacing + recurse[i]);
+	        }
+	      }
+	    }
+	  }
+	}
+	
+	
+	function normalizeString(str) {
+	  if (str.match(/^[\w]+$/)) {
+	    return str;
+	  } else {
+	    return JSON.stringify(str);
+	  }
+	}
+	
+	function convertString(obj, ret) {
+	  ret.push(normalizeString(obj));
+	}
 
-		        			
-		        		}else{
-		        		
-		        		}	
-		        	}
-		        }); 
-		              	
-        	}
-        };
 
-		setInterval('cmdhistory()',1000);
+
 
 </script>
 {% endblock %}

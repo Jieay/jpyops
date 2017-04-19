@@ -1356,20 +1356,18 @@ def planvl_add(request):
             db_add_plan(name=plan_name, planmark=plan_planmark, cpts_id=plans_selected)
             planvl = get_object(PlanVocational, name=plan_name)
             if planvl:
-                planvl_form = PlanVocationalForm(request.POST, instance=planvl)            
+                planvl_form = PlanVocationalForm(request.POST, instance=planvl)    
                 if planvl_form.is_valid():
                     planvl_form.save()
                     msg = u'添加方案  %s 成功' % plan_name
                     return HttpResponseRedirect(reverse('planvl_list'))
                 else:
-                    esg = u'添加方案 %s 失败' % plan_name            
+                    error = u'添加方案 %s 失败' % plan_name            
 
         except ServerError:
             pass
         except TypeError:
-            error = u'添加方案失败'
-        else:
-            msg = u'添加方案  %s 成功' % plan_name
+            error = u'添加方案 %s 失败' % plan_name
 
     return my_render('jpyasset/planvl_add.html', locals(), request)
 
@@ -1393,7 +1391,66 @@ def planvl_del(request):
 
 @require_role(role='super')
 def planvl_edit(request):
-    pass
+    error = ''
+    msg = ''
+    header_title, path1, path2, path3 = u'编辑方案', u'业务管理', u'编辑方案', u'方案管理'
+
+    plan_id = request.GET.get('id', '')
+    if plan_id:
+        confs_plan = PlanVocational.objects.get(id=plan_id)
+        confs_selected = confs_plan.configset.all()
+        confs_list = []
+        for i in confs_selected:
+            confs_list.append(i)
+        
+        confs_remain = ConfigPlanTask.objects.filter(~Q(name__in=confs_list))
+       
+        af = PlanVocationalForm(instance=confs_plan)
+    
+        if request.method == 'POST':
+            plan_name = request.POST.get('plan_name', '')
+            plan_planmark = request.POST.get('planmark', '')
+            plan_confs_selected_id = request.POST.getlist('confs_selected')
+            plan_confs_del_id = request.POST.getlist('confs')
+            plan_conf = get_object(PlanVocational, id=plan_id)
+     
+            try:
+                if '' in [plan_name, plan_planmark]:
+                    raise ServerError('方案名和方案代号不能为空')
+                if len(PlanVocational.objects.filter(name=plan_name)) > 1:
+                    raise ServerError(u'%s 方案名已存在' % plan_name)
+                elif len(PlanVocational.objects.filter(planmark=plan_planmark)) > 1:
+                    raise ServerError(u'%s 方案代号已存在' % plan_planmark)
+                # add conf of plan
+                                    
+                for k in plan_confs_del_id:
+                    plan_conf_data = get_object_or_404(PlanVocational, id=plan_id)
+                    conf_date = get_object_or_404(ConfigPlanTask, id=k)                
+                    plan_conf_data.configset.remove(conf_date)         
+                                  
+                for confobj in ConfigPlanTask.objects.filter(id__in=plan_confs_selected_id):
+                    confobj.planvocational_set.add(confs_plan)
+     
+                confs_plan.name = plan_name
+                confs_plan.planmark = plan_planmark
+                confs_plan.save()
+                
+                if plan_conf:
+                    af_post = PlanVocationalForm(request.POST, instance=plan_conf)
+                    if af_post.is_valid():
+                        af_post.save()
+                        msg = u' %s 方案修改成功' % plan_name
+                    else:
+                        error = u' %s 方案修改失败' % plan_name               
+            except ServerError, e:
+                error = e
+    
+            if not error:
+                return HttpResponseRedirect(reverse('planvl_list'))
+    
+        return my_render('jpyasset/planvl_edit.html', locals(), request)
+    else:
+        return HttpResponseRedirect(reverse('planvl_list'))
 
 
 @require_role(role='super')
